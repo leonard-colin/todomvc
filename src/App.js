@@ -1,10 +1,21 @@
 import logo from './logo.svg';
 import './App.css';
+import React, {useState} from "react";
 
 window.foobar = null;
 
+function uuidv4() {
+  return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+  );
+}
+
+function generateItem(text) {
+  return {text: text, id: uuidv4()}
+}
+
 function Todo(props) {
-  window.foobar = props;
+
   return (
   <li>
     <div className="view">
@@ -17,12 +28,8 @@ function Todo(props) {
 }
 
 function App() {
-  const items = [
-    {"text": "Rappel de Vaccin"},
-    {"text": "Faire courses"},
-    {"text": "Rappeler plombier"},
-  ];
-
+  const [items, setItems] = useState([]);
+  window.foobar = items;
   return (
     <div className="App">
       <section className="todoapp">
@@ -36,19 +43,25 @@ function App() {
           <ul className="todo-list">
             {items.map((item) => {
               return (
-                <Todo item={item}/>
+                <Todo key={item.id} item={item}/>
               );
             })}
             
           </ul>
           <footer className="footer">
-            <span class="todo-count"></span>
-            <ul class="filters">
+            <span className="todo-count"></span>
+            <ul className="filters">
               <li>
                 <a href="#/" class="selected">All</a>
               </li>
               <li>
-              <a href="#/active">Active</a>
+              <a href="#/active" onClick={(event) => {
+                event.preventDefault();
+                let newItems = items.slice()
+                newItems.push(generateItem("blabla3"));
+                setItems(newItems);
+              }}>
+                Active</a>
               </li>
               <li>
               <a href="#/completed">Completed</a>
